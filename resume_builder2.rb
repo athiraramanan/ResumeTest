@@ -1,4 +1,5 @@
 require "csv"
+require "prawn"
 class Resume_builder
 	def initialize()
 	@name = ""
@@ -30,12 +31,14 @@ class Resume_builder
 	end
 	
 	def create_file
-	puts "which format do you need?txt/csv"
+	puts "which format do you need?txt/csv/pdf"
 	format = gets.chomp
 		if(format == "txt")
 			store_in_txt()
 		elsif(format == "csv")
 		 	store_in_csv()
+		elsif(format == "pdf")
+			store_in_pdf()
 		else
 			puts "invalid format."
 		end
@@ -57,7 +60,7 @@ class Resume_builder
 	
 	def initial_csv
 	CSV.open("output2.csv", "wb") do |csv|
-  	   csv << ["Name","#{@name}"]
+  	   csv << ["NAME","#{@name}"]
   	   csv << ["GENDER","#{@gender}"]
   	   csv << ["AGE","#{@age}"]
   	   csv << ["QUALIFICATION","#{@qualification}"]
@@ -71,7 +74,31 @@ class Resume_builder
 	def store_in_csv
 	 initial_csv()
 	end
-	
+
+	def initial_pdf()
+	  text_name="NAME :#{@name}"
+	  text_gender="GENDER: #{@gender}"
+	  text_age="AGE: #{@age}"
+	  text_qual="QUALIFICATION :#{@qualification}"
+	  text_skil="SKILLS: #{@skills}"
+	  text_number="CONTACT NUMBER: #{@phnumber}"
+	  text_mail="E-MAIL: #{@mail}"
+	  Prawn::Document.generate("output2.pdf") do
+	  text text_name 
+	  text text_gender
+	  text text_age
+	  text text_qual
+ 	  text text_skil 
+	  text text_number
+	  text text_mail
+	    stroke_circle [20, 20], 10
+	  end
+	end
+
+	def store_in_pdf
+	 initial_pdf()	    
+	end
+
 	
 end
 resume = Resume_builder.new()
